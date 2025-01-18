@@ -1,8 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:koko_habit_tracker/models/habit_database.dart';
 import 'package:koko_habit_tracker/pages.dart/home_page.dart';
+import 'package:koko_habit_tracker/themes/dart_mode.dart';
+import 'package:koko_habit_tracker/themes/light_mode.dart';
+import 'package:koko_habit_tracker/themes/theme_provider.dart';
+import 'package:provider/provider.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  //initialize database
+  await HabitDatabase.initialize();
+  await HabitDatabase().saveFirstLaunchDate();
+  runApp(
+    MultiProvider(
+      providers: [
+        //habit provider
+        ChangeNotifierProvider(create: (_) => HabitDatabase()),
+        //theme provider
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -13,6 +32,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: HomePage(),
+      // theme: context.read<ThemeProvider>().themeData,
+      theme: Provider.of<ThemeProvider>(context).themeData,
     );
   }
 }

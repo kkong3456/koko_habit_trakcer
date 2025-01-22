@@ -98,7 +98,7 @@ class HabitDatabase extends ChangeNotifier {
         },
       );
     }
-    notifyListeners();
+    readHabits();
   }
 
   //UPDATE - edit habit name
